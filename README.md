@@ -8,7 +8,7 @@ For CS572 project / Pytorch
 5. Open conda prompt and find the folder.
 6. Type: 
 ```
-conda env create -f env.yml
+conda env create -f 572.yml
 ```
 7. Back to Anaconda Navigator.
 8. Select the 'Environments' tab.

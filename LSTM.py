@@ -9,13 +9,14 @@ import os
 
 data_path = 'Data_TEST' # add path
 
-hidden_size = 128
-num_epochs = 2
 input_size = 9
-sequence_length = 100
-batch_size = 1
-learning_rate = 0.001
-num_layers = 3
+sequence_length = 20 # 40 in the paper
+batch_size = 32 # 32 in the paper
+hidden_size = 128 # 128 in the paper
+num_epochs = 2 # 2000 in the paper
+learning_rate = 0.001 # 0.001 in the paper
+num_layers = 3 # 3 in the paper
+weight_decay = 10E-5 # 10E-5 in the paper
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -30,11 +31,14 @@ class LSTM(nn.Module):
     
     def forward(self, x):
         h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(device)
-        out, _ = self.rnn(x, h0)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(device)
+        out, _ = self.lstm(x, (h0,c0))
         # out : batch_size, seq_length, hidden_size
-        # out (N, 9, 128)
+        # out (32, 40, 128) according to the paper
         out = out[:, -1, :]
+        # out (32, 128) only uses the last timestep within the sequence
         out = self.fc(out)
+        return out
 
 
 # Data importing and processing 
@@ -49,15 +53,5 @@ for path_idx in os.listdir(data_path):
 
 
 
-lstm = nn.LSTM(9, 1)
-
-
-
-
-# print(device)
-
-#  if torch.rand(1, 1) and torch.cuda.is_available():
-#     print("OK")
-
-# print ("Got this working at least")
+# lstm = nn.LSTM(9, 1)
 
